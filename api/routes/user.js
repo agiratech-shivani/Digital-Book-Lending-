@@ -1,12 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const multer = require("multer");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+//const multer = require("multer");
+//const bcrypt = require("bcrypt");
+//const jwt = require("jsonwebtoken");
 
-const User = require("../../models/users");
+const User = require("../models/users");
 // handle incoming get request to /orders
+
+router.post("/", async (req, res, next) => {
+  const { name, mailId, phone, employeeId } = req.body;
+  try {
+    const user = await User.findOne({ employeeId: employeeId });
+    if (!user) {
+      await User.create({
+        mail: mailId,
+        name: name,
+        phoneNumber: phone,
+        employeeId: employeeId,
+      });
+    }
+    res.status(200).send({ message: "inserted details successful" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: "something went wrong" });
+  }
+});
+
 router.get("/", (req, res, next) => {
   User.find()
     .select("name email")
@@ -36,37 +56,38 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/", (req, res, next) => {
-  console.log(req.file);
-  const user = new User({
-    _id: new mongoose.Types.ObjectId(),
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  });
-  user
-    .save()
-    .then((result) => {
-      console.log(result);
-      res.status(201).json({
-        message: " created user successfully",
-        createdUser: {
-          name: result.name,
-          email: result.email.at,
-          _id: result._id,
-          password: result.password,
-          request: {
-            type: "GET",
-            url: "http://localhost:3000/users/" + result._id,
-          },
-        },
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ err: err });
-    });
-});
+// router.post("/", (req, res, next) => {
+//   console.log(req.file);
+//   const user = new User({
+//     _id: new mongoose.Types.ObjectId(),
+//     name: req.body.name,
+//     email: req.body.email,
+//     password: req.body.password,
+//   });
+//   user
+//     .save()
+//     .then((result) => {
+//       console.log(result);
+//       res.status(201).json({
+//         message: " created user successfully",
+//         createdUser: {
+//           name: result.name,
+//           email: result.email.at,
+//           _id: result._id,
+//           password: result.password,
+//           request: {
+//             type: "GET",
+//             url: "http://localhost:3000/users/" + result._id,
+//           },
+//         },
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({ err: err });
+//     });
+// });
+
 router.get("/:userId", (req, res, next) => {
   const id = req.params.userId;
   User.findById(id)

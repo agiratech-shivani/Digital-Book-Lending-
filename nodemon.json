@@ -1,6 +1,0 @@
-{
-  "env": {
-    "MONGODB_URI": "mongodb://localhost:27017/Digital-Book-lending",
-    "JWT_KEY": "secret"
-  }
-}
