@@ -1,20 +1,40 @@
 import React from "react";
-import Header from "./components/Header";
+
 //import LoginButton from "./components/LoginButton";
-//import {Routes, Route} from "react-router-dom"
+import { Routes, Route } from "react-router-dom";
+
+import Home from "./components/Home";
+import Books from "./components/Books";
+import BookDetail from "./components/BookDetail";
+import AddBook from "./components/AddBook";
+import LoginButton from "./components/LoginButton";
+import RequestManagement from "./components/RequestManagement";
+//import LoginPage from "./components/LoginPage";
 const App = () => {
-  return <Header />;
+
+
+  let isLoggedIn=false;
+
+      if(localStorage.getItem("employee-id")){
+          isLoggedIn = true;
+         }
+  return (
+    <React.Fragment>
+      <main>
+        <Routes>
+          <Route exact path='/' Component={LoginButton}/>
+          <Route path="/home" element={<Home data={isLoggedIn}/>} exact />
+          <Route path="/add" element={<AddBook data/>} exact />
+          <Route path="/books" element={<Books />} exact />
+          <Route path="/books/:id" element={<BookDetail />} exact />
+          <Route path="/requests" element={<RequestManagement/>} exact />
+          {/* <Route path="/login" element={<LoginPage/>} /> */}
+        </Routes>
+      </main>
+    </React.Fragment>
+  );
 };
 
-// function App() {
-//   return (
-//     <div
-//       className="App"
-//       style={{ backgroundColor: "lightblue", padding: "20px" }}
-//     >
-//       <LoginButton />
-//     </div>
-//   );
-// }
+
 
 export default App;

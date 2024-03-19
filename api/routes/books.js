@@ -3,29 +3,28 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const User = require("../models/users");
 const Book = require("../models/book");
-//const multer = require("multer");
 const axios = require("axios");
-// const fetch = require("node-fetch");
 
-//const axios = require("axios");
-//const checkAuth = require("./middleware/check-auth");
-
-//Handling incoming GET requests to /orders
+//Handling incoming GET requests to /books
 router.get("/", (req, res, next) => {
   Book.find()
-    .populate("owner", "name")
-    //.select("author title owner")
-    .exec()
+    .populate("owner")
+    //.populate("owner", "author")
+    //.select(" title owner")
+    // .lean()
     .then((docs) => {
+      console.log("docs", docs);
       res.status(200).json({
         count: docs.length,
         book: docs.map((doc) => {
+          console.log("doc.name", doc);
           return {
             _id: doc._id,
             author: doc.author,
-            owner: doc.owner,
+            owner: doc.owner ? doc.owner.name : "",
             title: doc.title,
-            bookimage: doc.bookimage,
+            image: doc.image,
+            // publisher: doc.publisher,
             request: {
               type: "GET",
               url: "http://localhost:3000/books/" + doc._id,
@@ -35,6 +34,7 @@ router.get("/", (req, res, next) => {
       });
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({ error: err });
     });
 });
@@ -69,6 +69,8 @@ async function fetchBookDetails(isbn) {
           ? bookInfo.authors.join(", ")
           : "Unknown Author",
         publisher: bookInfo.publisher || "Unknown Publisher",
+        imageLink: bookInfo.imageLinks ? bookInfo.imageLinks.thumbnail : null,
+        //description: bookInfo.description || "No description available",
 
         // Add more details as needed
       };
@@ -86,7 +88,7 @@ async function fetchBookDetails(isbn) {
 
 router.post("/", async (req, res) => {
   try {
-    const { isbn } = req.body;
+    const { isbn, userId } = req.body;
     console.log(isbn, req.body);
     // Fetch book details using ISBN from an online database
     const bookInfo = await fetchBookDetails(isbn);
@@ -97,14 +99,22 @@ router.post("/", async (req, res) => {
         .json({ message: "Book details not found for the provided ISBN" });
     }
 
+    // Fetch user details using ownerId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     // Create a new Book instance with retrieved details
     const book = new Book({
       title: bookInfo.title,
       author: bookInfo.author,
       isbn: isbn,
-      owner: "65e953bfa5fe77491fa91eac",
+      owner: user._id, //"60af9c28-eb6b-475a-a342-0533a88b0052",
+      //ownedBy: user.name,
       publisher: bookInfo.publisher,
-      // Add more properties as needed
+      image: bookInfo.imageLink,
     });
 
     // Save the book to the database
@@ -124,109 +134,54 @@ router.post("/", async (req, res) => {
   }
 });
 
-// router.post("/", upload.single("bookimage"), (req, res, next) => {
-//   User.findById(req.body.userId)
-//     .then((user) => {
-//       const book = new Book({
-//         // _id: mongoose.Types.ObjectId(),
-//         author: req.body.author,
-//         title: req.body.title,
-//         owner: req.body.userId,
-//         // bookimage: req.file.path,
-//       });
-//       if (!book) {
-//         return res.status(404).json({ message: "product not found" });
-//       }
-//       return book.save();
-//     })
-
-//     .then((result) => {
-//       console.log(result);
-//       res.status(201).json({
-//         message: "Book STORED",
-//         createdOrder: {
-//           _id: result._id,
-//           author: result.author,
-//           title: result.title,
-//           owner: result.owner,
-//         },
-//         request: {
-//           type: "GET",
-//           url: "http://localhost:3000/books/" + result._id,
-//         },
-//       });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).json({ error: err });
-//     });
-// });
-
-// router.get("/:bookId", (req, res, next) => {
-//   Book.findById(req.params.bookId)
-//     .exec()
-//     .then((book) => {
-//       if (!book) {
-//         return res.status(404).json({
-//           message: "Book not found",
-//         });
-//       }
-//       res.status(200).json({
-//         book: doc,
-//         request: {
-//           type: "GET",
-//           url: "http://localhost:3000/books",
-//         },
-//       });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ error: "err" });
-//     });
-// });
-
-router.get("/:ownerId", async (req, res) => {
+// Adding review for book
+router.post("/:bookId/reviews", async (req, res, next) => {
   try {
-    const ownerId = req.params.ownerId;
-
-    // Retrieve books owned by the specified user from the database
-    const books = await Book.find({ owner: ownerId });
-
-    if (books.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No books found for the specified owner" });
+    const book = await Book.findById(req.params.bookId).populate("owner");
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
     }
+    const reviewer = owner.name;
+    const { rating, comment } = req.body;
+    const review = {
+      reviewer,
+      rating,
+      comment,
+    };
 
-    res.status(200).json({ books });
-  } catch (error) {
-    console.error("Error fetching books:", error);
-    res.status(500).json({ error: "Internal server error" });
+    book.reviews.push(review);
+    await book.save();
+
+    res.status(201).json({
+      message: "Review added successfully",
+      review,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.patch("/:bookId", (req, res, next) => {
-  res.status(200).json({
-    message: "updated book",
-  });
-});
-
-router.delete("/:bookId", (req, res, next) => {
-  Book.deleteOne({ _id: req.params.bookId })
+//GET book details by id
+router.get("/:bookId", (req, res, next) => {
+  Book.findById(req.params.bookId)
+    .populate("owner")
     .exec()
-    .then((result) => {
+    .then((book) => {
+      if (!book) {
+        return res.status(404).json({
+          message: "Book not found",
+        });
+      }
       res.status(200).json({
-        message: "Book Deleted",
+        book: book,
         request: {
-          type: "POST",
+          type: "GET",
           url: "http://localhost:3000/books",
-          body: { userId: "ID", author: "String", title: "String" },
         },
       });
     })
     .catch((err) => {
-      res.status(500).json({
-        error: err,
-      });
+      res.status(500).json({ error: "err" });
     });
 });
 

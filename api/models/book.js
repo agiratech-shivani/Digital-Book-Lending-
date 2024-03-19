@@ -8,9 +8,21 @@ const bookSchema = new Schema(
     title: { type: String, required: true },
     author: { type: String, required: true },
     //description: { type: String, required: true },
-    owner: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to the User model
+    owner: { type: mongoose.Types.ObjectId, ref: "User" }, // Reference to the User model
+   //ownedBy: {type:String,required:true},
     publisher: { type: String, required: true },
-    //bookimage: { type: String, required: true },
+    image: {
+      type: String,
+      required: true,
+    },
+    reviews: [
+      {
+        reviewer: { type: String, required: true,ref:'User' }, // Assuming reviewer is user's name
+        rating: { type: Number, required: true },
+        comment: { type: String }
+      }
+    ]
+   
   },
   { timestamps: true }
 );

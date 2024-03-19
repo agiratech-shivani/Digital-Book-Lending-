@@ -1,5 +1,6 @@
 import { PublicClientApplication } from "@azure/msal-browser";
 
+
 const msalConfig = {
   auth: {
     clientId: "e795f125-b26e-405a-9d58-e7088d0f72c0",
@@ -11,6 +12,8 @@ const msalConfig = {
     cacheLocation: "localStorage",
   },
 };
+
+
 
 const login = async () => {
   console.log("login called");
@@ -72,7 +75,8 @@ const login = async () => {
           })
             .then(() => {
 
-              window.location.href = "/";
+              window.location.href = "/home";
+              
 
             })
           .catch((err) => console.log(err));
