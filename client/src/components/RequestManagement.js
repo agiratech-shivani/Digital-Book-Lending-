@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "../components/Header"
+import Header from "../components/Header";
 
-const RequestManagement = ({ bookId, ownerEmail }) => {
+const RequestManagement = ({ userId, ownerEmail }) => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+  //   const fetchRequests = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:5000/requests?bookId=${bookId}`
+  //       );
+  //       setRequests(response.data || []);
+  //     } catch (error) {
+  //       console.error("Error fetching requests:", error);
+  //     }
+  //   };
+  //   fetchRequests();
+  // }, [bookId]);
+  const fetchRequests = async () => {
       try {
+        // Retrieve userId from localStorage
+        const userId = localStorage.getItem("objectId");
+        if (!userId) {
+          throw new Error("User ID not found in localStorage");
+        }
+        // Fetch requests for the user ID
         const response = await axios.get(
-          `http://localhost:5000/requests?bookId=${bookId}`
+          `http://localhost:5000/requests/${userId}`
         );
         setRequests(response.data || []);
       } catch (error) {
@@ -17,9 +35,7 @@ const RequestManagement = ({ bookId, ownerEmail }) => {
       }
     };
     fetchRequests();
-  }, [bookId]);
-
-  
+  }, [userId]);
 
   const handleApprove = async (requestId) => {
     try {
@@ -43,23 +59,23 @@ const RequestManagement = ({ bookId, ownerEmail }) => {
 
   return (
     <>
-    {<Header/>}
-    <div>
-      <h2>Requests for Approval</h2>
-      <ul>
-        {requests.map((request) => (
-          <li key={request._id}>
-            Requester: {request.requester} - Status: {request.status}
-            {request.status !== "approved" && (
-              // Button for approving the request
-              <button onClick={() => handleApprove(request._id)}>
-                Approve
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+      {<Header />}
+      <div>
+        <h2>Requests for Approval</h2>
+        <ul>
+          {requests.map((request) => (
+            <li key={request._id}>
+              Requester: {request.requester.name} - Status: {request.status}
+              {request.status !== "approved" && (
+                // Button for approving the request
+                <button onClick={() => handleApprove(request._id)}>
+                  Approve
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 };

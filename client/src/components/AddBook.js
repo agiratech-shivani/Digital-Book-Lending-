@@ -10,7 +10,7 @@ const AddBook = () => {
   const history = useNavigate();
   const [input, setInput] = useState({
     isbn: '',
-    userId:'',
+   // userId:'',
   });
   
   const handleChange = (e) => {
@@ -24,9 +24,10 @@ const AddBook = () => {
   
   const sendRequest = async () => {
     try {
+      const userId=localStorage.getItem("objectId")
       const response = await axios.post("http://localhost:5000/books", {
         isbn: String(input.isbn),
-        userId:String(input.userId)
+        userId:userId
       });
       return response.data;
     } catch (error) {
@@ -66,7 +67,7 @@ const AddBook = () => {
           variant="outlined"
           name="isbn"
         ></TextField>
-        <FormLabel>UserId</FormLabel>
+        {/* <FormLabel>UserId</FormLabel>
       <TextField
       type="text"
       value={input.userId}
@@ -75,7 +76,7 @@ const AddBook = () => {
         fullWidth
         variant="outlined"
         name="userId"
-      ></TextField>
+      ></TextField> */}
       {/*<formLabel>Publisher</formLabel>
       <TextField
         margin="normal"

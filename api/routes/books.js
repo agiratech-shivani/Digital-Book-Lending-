@@ -141,8 +141,8 @@ router.post("/:bookId/reviews", async (req, res, next) => {
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
-    const reviewer = owner.name;
-    const { rating, comment } = req.body;
+
+    const { reviewer, rating, comment } = req.body;
     const review = {
       reviewer,
       rating,
@@ -164,7 +164,7 @@ router.post("/:bookId/reviews", async (req, res, next) => {
 //GET book details by id
 router.get("/:bookId", (req, res, next) => {
   Book.findById(req.params.bookId)
-    .populate("owner")
+    .populate("owner", "reviews.reviewer")
     .exec()
     .then((book) => {
       if (!book) {

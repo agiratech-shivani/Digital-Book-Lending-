@@ -1,69 +1,64 @@
 import React from "react";
-import Header from "./Header";
-import login from "../login";
-import "./Button.css";
-import LoginHeader from "./LoginHeader";
-import image1 from "./book1.png";
-import image2 from "./book2.png";
-import { Link,Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import "./Home.css";
+import Header from "./Header";
+import LoginHeader from "./LoginHeader";
+import login from "../login";
+import image1 from "./b2.jpg";
+import image2 from "./b1.jpg";
 
 const Home = ({ data }) => {
   return !data ? (
     <>
       <LoginHeader />
-      <button className="Login-button" onClick={login}>
-        proceed after login
+      <button className="login-button" onClick={login}>
+        Proceed after Login
       </button>
     </>
   ) : (
     <>
       <Header />
-      <h1>Lend Books With Ease</h1>
+      <div className="container">
+        <section className="intro-section">
+          <div className="text">
+            <h1>Welcome to Agira's Online Book Lending</h1>
+            <p>Discover a vast collection of books at your fingertips</p>
+            <Link to="/books" className="button">
+              Explore Books
+            </Link>
+          </div>
+          <div className="image-container">
+            <img src={image1} alt="Book" className="intro-image" />
+          </div>
+        </section>
 
-      <div className="image-container">
-        <div className="text1">
-          <p class=" font-bold text-5xl ph:text-3xl ">
-            Agira's Online
-            <br /> Book lending
-          </p>
-        </div>
-        <div className="img1">
-          <img className="firstimage" src={image1} />
-        </div>
-      </div>
+        <section className="trending-section">
+          <div className="image-container">
+            <img src={image2} alt="Book" className="trending-image" />
+          </div>
+          <div className="text">
+            <h2>Trending Books</h2>
+            <p>Discover the latest and most popular books</p>
+            <Link to="/books" className="button">
+              View Trending Books
+            </Link>
+          </div>
+        </section>
 
-      <div className="button-container">
-        <div className="text2">
-          <p class=" font-bold text-5xl ph:text-3xl ">
-            Trending Books
-            <br />
-            Best of Technology
-          </p>
-        </div>
-        <Link to="/books">
-          {" "}
-          <button className="img2 button" onclick>
-            Books
-          </button>
-        </Link>
+        <section className="joy-section">
+          <div className="text">
+            <h2>Spread The Joy Of Reading</h2>
+            <p>Add your favorite books to our library</p>
+            <Link to="/add" className="button">
+              Add Books
+            </Link>
+          </div>
+          <div className="image-container">
+            <img src={image1} alt="Book" className="joy-image" />
+          </div>
+        </section>
       </div>
-
-      <div className="image2-container-new ">
-        <div className="text3">
-          <p class=" font-bold text-5xl ph:text-2xl">
-            Spread The Joy Of<br /> 
-            
-            {/* Let the pages that inspire you inspire the next generation of
-            readers. <br /> */}
-           Reading. Add your <br />favourite books to our<br /> library
-          </p>
-        </div>
-        <div className="img3">
-          <img src={image2} />
-        </div>
-      </div>
-      <Outlet/>
+      <Outlet />
     </>
   );
 };

@@ -20,7 +20,8 @@ router.post("/", async (req, res, next) => {
         employeeId: employeeId,
       });
     }
-    res.status(200).send({ message: "inserted details successful" });
+    console.log(user);
+    res.status(200).send({ message: "inserted details successful" , response: user});
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: "something went wrong" });

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -28,8 +29,8 @@ const transporter = nodemailer.createTransport({
   // Configure your email service provider
   service: 'gmail', // e.g., 'gmail'
   auth: {
-    user: 'shivanichapala91@gmail.com',
-    pass: "xeto oiop tftq vsij"
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS
   }
 });
 

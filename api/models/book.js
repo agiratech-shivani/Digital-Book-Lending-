@@ -9,7 +9,6 @@ const bookSchema = new Schema(
     author: { type: String, required: true },
     //description: { type: String, required: true },
     owner: { type: mongoose.Types.ObjectId, ref: "User" }, // Reference to the User model
-   //ownedBy: {type:String,required:true},
     publisher: { type: String, required: true },
     image: {
       type: String,

@@ -1,23 +1,41 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const Request = require("../models/request");
 const Book = require("../models/book");
 const User = require("../models/users");
 const nodemailer = require("nodemailer");
+const { default: mongoose } = require("mongoose");
 
 // nodemailer transporter setup
 const transporter = nodemailer.createTransport({
   // Configure your email service provider
   service: "gmail", // e.g., 'gmail'
   auth: {
-    user: "shivanichapala91@gmail.com",
-    pass: "xeto oiop tftq vsij",
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS,
   },
 });
 
 //GET Requests
-router.get("/", (req, res) => {
-  Request.find()
+router.get("/:userId", async (req, res) => {
+  //const userId=localStorage.getItem("objectId")
+  console.log("req.params.userId", req.params.userId);
+  const books = await Book.find({ owner: req.params.userId });
+  console.log("books", books);
+  const bookIds = books.map((book) => book._id);
+  console.log("bookIds", bookIds);
+  Request.find({ book: { $in: bookIds } })
+    .populate([
+      {
+        path: "book",
+        populate: {
+          path: "owner",
+          select: "_id",
+        },
+      },
+      { path: "requester" },
+    ])
     .then((requests) => {
       if (requests.length === 0) {
         return res.status(404).json({ message: "No requests found" });
@@ -33,7 +51,7 @@ router.get("/", (req, res) => {
 //POST request of the book
 router.post("/", async (req, res) => {
   const { bookId, requester } = req.body; // Assuming owner's email is provided
-
+  console.log("requester", requester);
   try {
     const request = new Request({
       book: bookId,
@@ -48,7 +66,6 @@ router.post("/", async (req, res) => {
       .select("owner title")
       .populate("owner");
     console.log(book);
-    
 
     // Check if the book is found
     if (!book) {
@@ -106,7 +123,5 @@ router.put("/:requestId/approve", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 module.exports = router;

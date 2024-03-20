@@ -9,12 +9,12 @@ const BookDetail = () => {
   const bookId = useParams().id;
   const [book, setBook] = useState(null);
   const [review, setReview] = useState({
-    reviewer: "",
+    reviewer: localStorage.getItem("name"),
     rating: "",
     comment: "",
   });
   const [ownermail, setOwnermail] = useState(""); // State to store the requester's email
-  const [requester, setRequester] = useState("");
+  const [requester, setRequester] = useState(localStorage.getItem("objectId"));
   const [requestMessage, setRequestMessage] = useState(""); // State to hold the request message
 
   // let data = {};
@@ -22,10 +22,9 @@ const BookDetail = () => {
 
   useEffect(() => {
     const fetchBook = async () => {
-      await axios.get(`http://localhost:5000/books/${bookId}`).then((res) => {
-        console.log(res);
-        setBook(res.data?.book);
-      });
+      const res = await axios.get(`http://localhost:5000/books/${bookId}`);
+      console.log(res);
+      setBook(res.data?.book);
     };
     fetchBook();
   }, [bookId]);
@@ -63,8 +62,9 @@ const BookDetail = () => {
 
   const handleRequest = async () => {
     try {
-      // const requester="";
-      setRequester("65e953bfa5fe77491fa91eac");
+      // const objectId = localStorage.getItem("objectId");
+      // // const requester="";
+      // setRequester(objectId);
       const requestData = { bookId, ownermail, requester };
       await axios.post("http://localhost:5000/requests", requestData);
       setRequestMessage("Request sent successfully!"); // Update the request message state
@@ -95,7 +95,7 @@ const BookDetail = () => {
                       {book.reviews.map((review, index) => (
                         // Render specific properties of each review
                         <li className="reviewer" key={index}>
-                          <p>Reviewer: {review.reviewer}</p>
+                          <p>Reviewer: {review.reviewer               }</p>
                           <p>Rating: {review.rating}</p>
                           <p>Comment: {review.comment}</p>
                         </li>

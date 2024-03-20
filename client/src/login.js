@@ -1,6 +1,5 @@
 import { PublicClientApplication } from "@azure/msal-browser";
 
-
 const msalConfig = {
   auth: {
     clientId: "e795f125-b26e-405a-9d58-e7088d0f72c0",
@@ -12,8 +11,6 @@ const msalConfig = {
     cacheLocation: "localStorage",
   },
 };
-
-
 
 const login = async () => {
   console.log("login called");
@@ -60,7 +57,8 @@ const login = async () => {
         .then((res) => {
           console.log(res);
           localStorage.setItem("employee-id", res.id);
-          fetch("http://localhost:5000/users", {
+          localStorage.setItem("name", res.displayName);
+          return fetch("http://localhost:5000/users", {
             method: "post",
             headers: {
               "Content-Type": "application/json",
@@ -73,13 +71,17 @@ const login = async () => {
               name: res.displayName,
             }),
           })
-            .then(() => {
-
-              window.location.href = "/home";
-              
-
+            .then((response) => {
+              return response.json();
             })
-          .catch((err) => console.log(err));
+            .then((result) => {
+              console.log(result);
+              localStorage.setItem("objectId", result.response._id);
+              setTimeout(() => {
+                window.location.href = "/home";
+              }, 50000);
+            })
+            .catch((err) => console.log(err));
         });
     })
     .catch(async (error) => {
@@ -91,7 +93,5 @@ const login = async () => {
       }
     });
 };
-
-
 
 export default login;

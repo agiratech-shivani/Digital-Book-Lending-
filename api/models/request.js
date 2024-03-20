@@ -10,7 +10,7 @@ const requestSchema = new Schema({
     ref: "User",
     required: true,
   },
-  requesterEmail: { type: String, ref:'User' },
+  //requesterEmail: { type: String, ref:'User' },
   status: {
     type: String,
     enum: ["pending", "approved", "rejected"],
