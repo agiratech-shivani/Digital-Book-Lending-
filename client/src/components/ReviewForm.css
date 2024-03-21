@@ -1,0 +1,20 @@
+.review-form {
+  margin: 15px;
+  margin-left: 18px;
+  width:480px
+  /* padding :20px; */
+}
+.reviewer-field{
+  border-radius: 10px;
+  width: 460px;
+}
+.comment {
+  width: 460px;
+  height: 70px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+.submit-button {
+  border-radius: 10px;
+  margin-top: 5px;
+}

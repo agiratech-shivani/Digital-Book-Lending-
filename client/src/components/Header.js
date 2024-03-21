@@ -22,7 +22,7 @@ const Header = () => {
             <Tab LinkComponent={Link} to="/home" label="Home" />
             <Tab LinkComponent={Link} to="/add" label="Add Book" />
             <Tab LinkComponent={Link} to="/books" label="Books" />
-             <Tab LinkComponent={Link} to="/requests" label="Request Book" /> 
+             <Tab LinkComponent={Link} to="/requests" label="Requests" /> 
 
            
             {/* <LogoutButton /> */}

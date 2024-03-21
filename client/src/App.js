@@ -9,6 +9,8 @@ import BookDetail from "./components/BookDetail";
 import AddBook from "./components/AddBook";
 import LoginButton from "./components/LoginButton";
 import RequestManagement from "./components/RequestManagement";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 //import LoginPage from "./components/LoginPage";
 const App = () => {
 

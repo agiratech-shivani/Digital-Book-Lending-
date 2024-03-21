@@ -164,7 +164,7 @@ router.post("/:bookId/reviews", async (req, res, next) => {
 //GET book details by id
 router.get("/:bookId", (req, res, next) => {
   Book.findById(req.params.bookId)
-    .populate("owner", "reviews.reviewer")
+    .populate("owner")
     .exec()
     .then((book) => {
       if (!book) {
