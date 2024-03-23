@@ -1,35 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
+import "./RequestManagement.css";
 //import {MdOutlinedAddBox,MdOutlinedDelete} from 'react-icons/bs';
 
 const RequestManagement = ({ userId, ownerEmail }) => {
   const [requests, setRequests] = useState([]);
+  const [title, setTitle] = useState("Approved");
+  const [status, setStatus] = useState("pending");
 
-  useEffect(() => {
   const fetchRequests = async () => {
-      try {
-        // Retrieve userId from localStorage
-        const userId = localStorage.getItem("objectId");
-        if (!userId) {
-          throw new Error("User ID not found in localStorage");
-        }
-        // Fetch requests for the user ID
-        const response = await axios.get(
-          `http://localhost:5000/requests/${userId}`
-        );
-        setRequests(response.data || []);
-      } catch (error) {
-        console.error("Error fetching requests:", error);
+    try {
+      // Retrieve userId from localStorage
+      const userId = localStorage.getItem("objectId");
+      if (!userId) {
+        throw new Error("User ID not found in localStorage");
       }
-    };
+      const query = new URLSearchParams({ status }).toString();
+      const url = `http://localhost:5000/requests/${userId}?${query}`;
+      console.log("Fetch requests URL:", url);
+      // Fetch requests for the user ID
+      const response = await axios.get(
+        `http://localhost:5000/requests/${userId}?${query}`
+      );
+      setRequests(response.data || []);
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    }
+  };
+  useEffect(() => {
     fetchRequests();
-  }, [userId]);
+    if (status === "pending") {
+      setTitle("Pending");
+    }
+    if (status === "rejected") {
+      setTitle("Rejected ");
+    }
+    if (status === "approved") {
+      setTitle("Approved ");
+    }
+  }, [status]);
 
-  const handleApprove = async (requestId) => {
+  const handleApprove = async (requestId, status) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/requests/${requestId}/approve`
+        `http://localhost:5000/requests/${requestId}/approve`,
+        { status }
       );
       if (response.status === 200) {
         // Update the status of the approved request in the UI
@@ -40,58 +56,87 @@ const RequestManagement = ({ userId, ownerEmail }) => {
               : request
           )
         );
+        fetchRequests();
       }
     } catch (error) {
       console.error("Error approving request:", error);
     }
   };
+  
 
   return (
     <>
       {<Header />}
-      {/* <div>
-        <h2>Your Requests</h2>
-        <ul>
-          {requests.map((request) => (
-            <li key={request._id}>
-              Requester: {request.requester.name} - Status: {request.status}
-              {request.status !== "approved" && (
-                // Button for approving the request
-                <button onClick={() => handleApprove(request._id)}>
-                  Approve
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div> */}
-        <h2 >Your Requests</h2>
-      <div>
-        <table className="w-full border-separate border-spacing-2">
+      <h2 style={{ textAlign: "center" }}>{title} Requests</h2>
+      
+        <div className="table-container">
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value={"pending"}>Pending</option>
+            <option value={"approved"}>Approved</option>
+            <option value={"rejected"}>Rejected</option>
+          </select>
+          {requests.length > 0 ? (
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>Requester</th>
+                <th>Book Name</th>
+                <th>Status</th>
+                {status === "pending" && <th>Action</th>}
+              </tr>
+            </thead>
+
+            <tbody>
+              {requests.map((request) => (
+                <tr key={request._id}>
+                  <td>{request.requester.name}</td>
+                  <td>{request.book.title}</td>
+                  <td>{request.status}</td>
+                  {status === "pending" && (
+                    <td>
+                      {request.status !== "approved" && (
+                        <button
+                          className="action-button"
+                          onClick={() => handleApprove(request._id, "approved")}
+                        >
+                          Approve
+                        </button>
+                      )}
+                      {request.status !== "rejected" && (
+                        <button
+                          className="action-button"
+                          onClick={() => handleApprove(request._id, "rejected")}
+                        >
+                          Reject
+                        </button>
+                      )}
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+       
+      ) : (
+        <table className="custom-table">
           <thead>
             <tr>
-              <th className="border border-slate-600 rounded-md ">Requester</th>
-              <th className="border border-slate-600 rounded-md">Status</th>
-              <th className="border border-slate-600 rounded-md">Action</th> 
-              {/* This column for approving the request */}
+              <th>Requester</th>
+              <th>Book Name</th>
+              <th>Status</th>
+              {status === "pending" && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
-            {requests.map((request) => (
-              <tr key={request._id}>
-                <td className="border border-slate-600 rounded-md text">{request.requester.name}</td>
-                <td className="border border-slate-600 rounded-md text">{request.status}</td>
-                <td className="border border-slate-600 rounded-md text">
-                  {request.status !== "approved" && (
-                    <button onClick={() => handleApprove(request._id)}>
-                      Approve
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {/* Empty row to display when there are no requests */}
+            <tr>
+              <td colSpan={status === "pending" ? 4 : 3}>
+                No requests available.
+              </td>
+            </tr>
           </tbody>
         </table>
+      )}
       </div>
     </>
   );

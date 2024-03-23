@@ -17,6 +17,7 @@ const Home = ({ data }) => {
     </>
   ) : (
     <>
+    <div class="example">
       <Header />
       <div className="container">
         <section className="intro-section">
@@ -59,6 +60,7 @@ const Home = ({ data }) => {
         </section>
       </div>
       <Outlet />
+    </div>
     </>
   );
 };

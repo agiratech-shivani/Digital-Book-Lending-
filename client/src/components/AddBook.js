@@ -67,23 +67,7 @@ const AddBook = () => {
           variant="outlined"
           name="isbn"
         ></TextField>
-        {/* <FormLabel>UserId</FormLabel>
-      <TextField
-      type="text"
-      value={input.userId}
-      onChange={handleChange}
-        margin="normal"
-        fullWidth
-        variant="outlined"
-        name="userId"
-      ></TextField> */}
-      {/*<formLabel>Publisher</formLabel>
-      <TextField
-        margin="normal"
-        fullWidth
-        variant="outlined"
-        name="publisher"
-      ></TextField> */}
+        
 
         <Button variant="contained" type="submit">
           Add Book

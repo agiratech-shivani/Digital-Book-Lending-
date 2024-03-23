@@ -21,7 +21,9 @@ const URL = "http://localhost:5000/books";
 //   };
 const fetchHandler = async () => {
   try {
-    const response = await axios.get(URL);
+    const userId = localStorage.getItem("objectId");
+    const query = new URLSearchParams({ userId }).toString();
+    const response = await axios.get(URL + "?" + query);
     console.log("Response Data:", response.data); // Log response data
     return response.data;
   } catch (error) {
@@ -40,18 +42,18 @@ const Books = () => {
 
   return (
     <>
-    <Header/>
-    <div>
-      <h1>Available Books</h1>
-      <ul>
-        {book &&
-          book.map((book, i) => (
-            <li key={i}>
-              <Book book={book} />
-            </li>
-          ))}
-      </ul>
-    </div>
+      <Header />
+      <div>
+        <h1>Available Books</h1>
+        <ul>
+          {book &&
+            book.map((book, i) => (
+              <li key={i}>
+                <Book book={book} />
+              </li>
+            ))}
+        </ul>
+      </div>
     </>
   );
 };

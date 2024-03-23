@@ -6,11 +6,11 @@ html {
 }
 
 .container {
-  margin-top: 220px;
+  /* margin-top: 220px;
   margin-left: 280px;
   max-width: 1200px;
 
-  padding: 20px;
+  padding: 20px; */
 }
 
 .intro-section,
@@ -61,4 +61,7 @@ html {
 
 .button:hover {
   background-color: #0056b3;
+}
+.example{
+  background-color: #007bff;
 }

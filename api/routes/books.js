@@ -7,7 +7,7 @@ const axios = require("axios");
 
 //Handling incoming GET requests to /books
 router.get("/", (req, res, next) => {
-  Book.find()
+  Book.find({ owner: { $ne: req.query.userId } })
     .populate("owner")
     //.populate("owner", "author")
     //.select(" title owner")
@@ -151,6 +151,10 @@ router.post("/:bookId/reviews", async (req, res, next) => {
 
     book.reviews.push(review);
     await book.save();
+
+    if (book.reviews.length === 0) {
+      return res.status(404).json({ message: "No reviews for this book" });
+    }
 
     res.status(201).json({
       message: "Review added successfully",

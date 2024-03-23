@@ -72,6 +72,7 @@ const login = async () => {
             }),
           })
             .then((response) => {
+              window.location.href = "/home";
               return response.json();
             })
             .then((result) => {

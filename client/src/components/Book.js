@@ -20,7 +20,7 @@ const Book = (props) => {
       <Button LinkComponent={Link} to={`/books/${_id}`} sx={{ mt: "auto" }}>
         View
       </Button>
-      <Button sx={{ mt: "auto" }}>Request</Button>
+      
     </div>
   );
 };
