@@ -9,6 +9,7 @@ import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 import RatingSection from "./RatingSection";
 import RequestButton from "./RequestButton";
+import { toast, ToastContainer } from "react-toastify";
 // import './BookDetail.css';
 
 const BookDetail = () => {
@@ -34,7 +35,6 @@ const BookDetail = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setReview((prevReview) => ({ ...prevReview, [name]: value }));
-    
   };
 
   const handleSubmit = async (e) => {
@@ -53,7 +53,8 @@ const BookDetail = () => {
     try {
       const requestData = { bookId, ownermail, requester };
       await axios.post("http://localhost:5000/requests", requestData);
-      setRequestMessage("Request sent successfully!");
+      // setRequestMessage("Request sent successfully!");
+      toast.success("Book Requested Successfully!");
     } catch (error) {
       console.error("Error sending request:", error);
     }
@@ -61,51 +62,51 @@ const BookDetail = () => {
 
   return (
     <>
-    <div className="example1">
-      <Header />
+      <div className="example1">
+        <Header />
 
-      <div className="container">
-        {book && (
-          <div className="row">
-            <div className="col-md-6">
-              <div className="card-1">
-              <div className="book-info">
-                <BookImage image={book.image} author={book.author} />
-              </div>
-              <div>
-                <ReviewForm
-                  review={review}
-                  onChange={handleChange}
-                  onSubmit={handleSubmit}
-                />
-              </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-            <div className="card-2">
-              <div className="book-details">
-                <BookDetails
-                  title={book.title}
-                  author={book.author}
-                  publisher={book.publisher}
-                  owner={book.owner}
-                />
-                <RequestButton onClick={handleRequest} />
-                {requestMessage && <p>{requestMessage}</p>}
-
-                <div>
-                  {book && book.reviews && book.reviews.length>0? (
-                    <ReviewList reviews={book.reviews} />
-                  ):(<p className="not-found">No Reviews Found</p>)}
+        <div className="container">
+          {book && (
+            <div className="row">
+              <div className="col-md-6">
+                <div className="card-1">
+                  <div className="book-info">
+                    <BookImage image={book.image} author={book.author} />
+                  </div>
+                  <div>
+                    <ReviewForm
+                      review={review}
+                      onChange={handleChange}
+                      onSubmit={handleSubmit}
+                    />
+                  </div>
                 </div>
               </div>
+              <div className="col-md-6">
+                <div className="card-2">
+                  <div className="book-details">
+                    <BookDetails
+                      title={book.title}
+                      author={book.author}
+                      publisher={book.publisher}
+                      owner={book.owner}
+                    />
+                    <RequestButton onClick={handleRequest} />
+                    {requestMessage && <p>{requestMessage}</p>}
+
+                    <div>
+                      {book && book.reviews && book.reviews.length > 0 ? (
+                        <ReviewList reviews={book.reviews} />
+                      ) : (
+                        <p className="not-found">No Reviews Found</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          
-        )}
-        
-      </div>
+          )}
+        </div>
       </div>
     </>
   );

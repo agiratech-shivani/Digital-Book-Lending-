@@ -7,7 +7,7 @@ const RequestButton = ({ onClick }) => {
   const notify = () => toast.success("Book Requested Successfully!");
   return (
     <>
-      <button className="request-button" onClick={notify}>
+      <button className="request-button" onClick={onClick}>
         Request
       </button>
       <ToastContainer />

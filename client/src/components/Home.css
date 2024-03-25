@@ -20,11 +20,12 @@ html {
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .image-container {
   flex: 1;
+  padding:20px
 }
 
 .image-container img {
@@ -63,5 +64,5 @@ html {
   background-color: #0056b3;
 }
 .example{
-  background-color: #007bff;
+  background-color: #9d6991;
 }

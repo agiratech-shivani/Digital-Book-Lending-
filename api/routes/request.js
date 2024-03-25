@@ -39,9 +39,9 @@ router.get("/:userId", async (req, res) => {
       { path: "requester" },
     ])
     .then((requests) => {
-      if (requests.length === 0) {
-        return res.status(404).json({ message: "No requests found" });
-      }
+      // if (requests.length === 0) {
+      //   return res.status(404).json({ message: "No requests found" });
+      // }
       res.status(200).json(requests);
     })
     .catch((err) => {
@@ -95,7 +95,8 @@ router.put("/:requestId/approve", async (req, res) => {
 
   try {
     const requesterDetails = await Request.findById(requester).populate(
-      "requester"
+      ["requester",
+      "book"]
     );
     console.log("requesterDetails", requesterDetails);
     // Find the request by ID and update the status to "approved"
@@ -110,20 +111,19 @@ router.put("/:requestId/approve", async (req, res) => {
     }
 
     // Send email notification to the requester
-    if (req.body.status==="approved"){
-
+    if (req.body.status === "approved") {
       transporter.sendMail({
         from: "shivanichapala91@gmail.com",
         to: requesterDetails.requester.mail, //updatedRequest.requester.email, // Requester's email
         subject: "Request Approved",
-        text: `Your request for the book  has been approved.`,
+        text: `Your request for the book "${requesterDetails.book.title}" has been approved.`,
       });
-    }else if(req.body.status==="rejected"){
+    } else if (req.body.status === "rejected") {
       transporter.sendMail({
         from: "shivanichapala91@gmail.com",
         to: requesterDetails.requester.mail, //updatedRequest.requester.email, // Requester's email
         subject: "Request rejected",
-        text: `Your request for the book has been rejected.`,
+        text: `Your request for the book "${requesterDetails.book.title}" has been rejected.`,
       });
     }
 

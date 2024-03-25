@@ -6,19 +6,7 @@ import Header from "./Header";
 
 const URL = "http://localhost:5000/books";
 
-// const fetchHandler = async () => {
-//   return await axios.get(URL).then((res) => res.data);
-// };
 
-// const fetchHandler = async () => {
-//     try {
-//       const response = await axios.get(URL);
-//       return response.data;
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//       return { books: [] }; // Return an empty array in case of error
-//     }
-//   };
 const fetchHandler = async () => {
   try {
     const userId = localStorage.getItem("objectId");
@@ -44,7 +32,7 @@ const Books = () => {
     <>
       <Header />
       <div>
-        <h1>Available Books</h1>
+        <h1 style={{ textAlign: "center" }}>Available Books</h1>
         <ul>
           {book &&
             book.map((book, i) => (

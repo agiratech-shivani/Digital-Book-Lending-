@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import "./RequestManagement.css";
+import { toast } from "react-toastify";
 //import {MdOutlinedAddBox,MdOutlinedDelete} from 'react-icons/bs';
 
 const RequestManagement = ({ userId, ownerEmail }) => {
@@ -11,6 +12,7 @@ const RequestManagement = ({ userId, ownerEmail }) => {
 
   const fetchRequests = async () => {
     try {
+      console.log("ERRRORRRRR");
       // Retrieve userId from localStorage
       const userId = localStorage.getItem("objectId");
       if (!userId) {
@@ -26,6 +28,7 @@ const RequestManagement = ({ userId, ownerEmail }) => {
       setRequests(response.data || []);
     } catch (error) {
       console.error("Error fetching requests:", error);
+      toast.error("Something went wrong, Please try again later!");
     }
   };
   useEffect(() => {
@@ -49,33 +52,32 @@ const RequestManagement = ({ userId, ownerEmail }) => {
       );
       if (response.status === 200) {
         // Update the status of the approved request in the UI
-        setRequests((prevRequests) =>
-          prevRequests.map((request) =>
-            request._id === requestId
-              ? { ...request, status: "approved" }
-              : request
-          )
-        );
+        // setRequests((prevRequests) =>
+        //   prevRequests.map((request) =>
+        //     request._id === requestId
+        //       ? { ...request, status: "approved" }
+        //       : request
+        //   )
+        // );
         fetchRequests();
       }
     } catch (error) {
       console.error("Error approving request:", error);
     }
   };
-  
 
   return (
     <>
       {<Header />}
       <h2 style={{ textAlign: "center" }}>{title} Requests</h2>
-      
-        <div className="table-container">
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value={"pending"}>Pending</option>
-            <option value={"approved"}>Approved</option>
-            <option value={"rejected"}>Rejected</option>
-          </select>
-          {requests.length > 0 ? (
+
+      <div className="table-container">
+        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <option value={"pending"}>Pending</option>
+          <option value={"approved"}>Approved</option>
+          <option value={"rejected"}>Rejected</option>
+        </select>
+        {requests.length > 0 ? (
           <table className="custom-table">
             <thead>
               <tr>
@@ -116,27 +118,26 @@ const RequestManagement = ({ userId, ownerEmail }) => {
               ))}
             </tbody>
           </table>
-       
-      ) : (
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>Requester</th>
-              <th>Book Name</th>
-              <th>Status</th>
-              {status === "pending" && <th>Action</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {/* Empty row to display when there are no requests */}
-            <tr>
-              <td colSpan={status === "pending" ? 4 : 3}>
-                No requests available.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      )}
+        ) : (
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>Requester</th>
+                <th>Book Name</th>
+                <th>Status</th>
+                {status === "pending" && <th>Action</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {/* Empty row to display when there are no requests */}
+              <tr>
+                <td colSpan={status === "pending" ? 4 : 3}>
+                  No requests available.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );

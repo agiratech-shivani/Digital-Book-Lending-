@@ -17,6 +17,8 @@ const login = async () => {
   const msalInstance =
     await PublicClientApplication.createPublicClientApplication(msalConfig);
 
+  await msalInstance.handleRedirectPromise();
+
   const response = await msalInstance.loginPopup({
     scopes: ["user.read"],
     prompt: "select_account",

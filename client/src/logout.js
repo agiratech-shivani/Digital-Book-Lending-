@@ -14,12 +14,14 @@ const msalConfig = {
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const logout = () => {
+const logout = async () => {
+  // Initiate logout using MSAL
+  await msalInstance.initialize();
+  
+  msalInstance.logout();
   // Clear local storage
   localStorage.clear();
-
-  // Initiate logout using MSAL
-  msalInstance.logout();
+  
 };
 
 export default logout;
