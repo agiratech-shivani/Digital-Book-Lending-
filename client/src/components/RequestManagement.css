@@ -30,4 +30,19 @@
   .action-button:hover {
     background-color: #0056b3;
   }
+
+  .select-box-container{
+    position: relative;
+    padding :15px
+  
+  }
+
+  .select-box{
+
+    position: absolute; /* Position the select box absolutely */
+  top: 40%; /* Adjust top position as needed */
+  right: 0; /* Align the select box to the right side of the container */
+  transform: translateY(-50%); /* Center the select box vertically */
+
+  }
   

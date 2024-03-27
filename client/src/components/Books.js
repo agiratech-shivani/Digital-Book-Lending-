@@ -21,12 +21,12 @@ const fetchHandler = async () => {
 };
 
 const Books = () => {
-  const [book, setBook] = useState([]);
+  const [books, setBook] = useState([]);
 
   useEffect(() => {
-    fetchHandler().then((data) => setBook(data.book));
+    fetchHandler().then((data) => setBook(data.books));
   }, []);
-  console.log(book);
+  console.log(books);
 
   return (
     <>
@@ -34,8 +34,8 @@ const Books = () => {
       <div>
         <h1 style={{ textAlign: "center" }}>Available Books</h1>
         <ul>
-          {book &&
-            book.map((book, i) => (
+          {books &&
+            books.map((book, i) => (
               <li key={i}>
                 <Book book={book} />
               </li>

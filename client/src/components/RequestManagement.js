@@ -34,13 +34,13 @@ const RequestManagement = ({ userId, ownerEmail }) => {
   useEffect(() => {
     fetchRequests();
     if (status === "pending") {
-      setTitle("Pending");
+      setTitle("Pending Requests");
     }
     if (status === "rejected") {
-      setTitle("Rejected ");
+      setTitle("Rejected List ");
     }
     if (status === "approved") {
-      setTitle("Approved ");
+      setTitle("Approved List ");
     }
   }, [status]);
 
@@ -69,14 +69,17 @@ const RequestManagement = ({ userId, ownerEmail }) => {
   return (
     <>
       {<Header />}
-      <h2 style={{ textAlign: "center" }}>{title} Requests</h2>
+      <h2 style={{ textAlign: "center" }}>{title} </h2>
 
       <div className="table-container">
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+        <div className="select-box-container">
+
+        <select className="select-box" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value={"pending"}>Pending</option>
           <option value={"approved"}>Approved</option>
           <option value={"rejected"}>Rejected</option>
         </select>
+        </div>
         {requests.length > 0 ? (
           <table className="custom-table">
             <thead>

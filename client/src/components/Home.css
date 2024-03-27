@@ -48,6 +48,7 @@ html {
 .text p {
   margin: 10px 0;
   color: #666;
+  font-size: 20px;
 }
 
 .button {
@@ -64,5 +65,7 @@ html {
   background-color: #0056b3;
 }
 .example{
-  background-color: #9d6991;
+  background-color: hsl(120, 100%, 0.3);
+  /* filter: saturate(50%) brightness(80%); */
+ 
 }
